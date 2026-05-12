@@ -1,0 +1,74 @@
+version: "3"
+
+# RADiscordPresence build/dev tasks.
+# Only requirement: https://taskfile.dev — everything else runs inside Docker.
+#
+# Common workflows:
+#   task build:image   Build the Docker builder image (once, then cached)
+#   task build         Build all platform binaries
+#   task build:windows Build Windows binary only (fastest for local testing)
+#   task fmt           Auto-format all Go source files
+#   task validate      Format + vet + lint (run before pushing)
+
+vars:
+  IMAGE: radiscordpresence-builder
+  DOCKER_RUN: docker run --rm -v "{{.ROOT_DIR}}:/src" -w /src {{.IMAGE}}
+  LINT_RUN: docker run --rm -v "{{.ROOT_DIR}}:/src" -w /src golangci/golangci-lint:latest
+
+tasks:
+  default:
+    silent: true
+    cmd: task --list
+
+  # ── Docker image ──────────────────────────────────────────────────────────
+
+  build:image:
+    desc: Build the Docker builder image (run once; cached thereafter)
+    cmd: docker build -t {{.IMAGE}} build/
+
+  # ── Builds ────────────────────────────────────────────────────────────────
+
+  build:
+    desc: Build all platforms (windows amd64, linux amd64, macos amd64/arm64)
+    cmd: "{{.DOCKER_RUN}} sh build/build.sh"
+
+  build:windows:
+    desc: Build Windows amd64 binary only (fastest for local testing)
+    cmd: "{{.DOCKER_RUN}} sh build/build.sh windows-only"
+
+  # ── Code quality ──────────────────────────────────────────────────────────
+
+  fmt:
+    desc: Auto-format all Go source files in-place
+    cmd: "{{.DOCKER_RUN}} gofmt -w cmd/ internal/"
+
+  fix:
+    desc: Auto-format and apply golangci-lint auto-fixes
+    cmds:
+      - task: fmt
+      - "{{.LINT_RUN}} golangci-lint run --fix"
+
+  vet:
+    desc: Run go vet across all packages
+    cmd: "{{.DOCKER_RUN}} go vet ./..."
+
+  lint:
+    desc: Run golangci-lint
+    cmd: "{{.LINT_RUN}} golangci-lint run"
+
+  validate:
+    desc: "Format, vet, and lint — run before pushing"
+    cmds:
+      - task: fmt
+      - task: vet
+      - task: lint
+
+  # ── Utilities ─────────────────────────────────────────────────────────────
+
+  clean:
+    desc: Remove build artifacts (dist/)
+    cmds:
+      - cmd: rm -rf dist/
+        platforms: [linux, darwin]
+      - cmd: if exist dist rmdir /s /q dist
+        platforms: [windows]

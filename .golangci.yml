@@ -1,0 +1,16 @@
+version: "2"
+
+formatters:
+  enable:
+    - gofmt
+
+linters:
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - ineffassign
+
+issues:
+  max-issues-per-linter: 50
+  max-same-issues: 10
