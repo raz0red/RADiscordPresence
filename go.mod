@@ -1,4 +1,4 @@
-module github.com/raz0red/radiscordpresence
+module github.com/raz0red/radpresence
 
 go 1.23
 

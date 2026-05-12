@@ -1,4 +1,4 @@
-# RADiscordPresence
+# RAD Presence
 
 A background service that mirrors your [RetroAchievements](https://retroachievements.org/) session to [Discord Rich Presence](https://discord.com/developers/docs/rich-presence/overview).
 
@@ -25,13 +25,13 @@ Log in to [retroachievements.org](https://retroachievements.org/), go to **Setti
 ### 2. Save your credentials
 
 ```
-radiscordpresence set --username YOUR_RA_USERNAME --apikey YOUR_API_KEY
+radpresence set --username YOUR_RA_USERNAME --apikey YOUR_API_KEY
 ```
 
 ### 3. Test in the foreground (Discord must be running)
 
 ```
-radiscordpresence run
+radpresence run
 ```
 
 You should see log output when you switch games. Press Ctrl+C to stop.
@@ -40,12 +40,12 @@ You should see log output when you switch games. Press Ctrl+C to stop.
 
 ```
 # Windows — run as Administrator
-radiscordpresence install
-radiscordpresence start
+radpresence install
+radpresence start
 
 # macOS / Linux — run with sudo
-sudo radiscordpresence install
-sudo radiscordpresence start
+sudo radpresence install
+sudo radpresence start
 ```
 
 ---
@@ -54,17 +54,17 @@ sudo radiscordpresence start
 
 | Command | Description |
 |---|---|
-| `set --username X --apikey Y` | Save credentials to config |
-| `set --interval 30` | Change the poll interval (seconds) |
-| `set` | Show current config |
-| `run` | Run in the foreground, Ctrl+C to stop |
-| `run --username X --apikey Y` | Run with inline credentials (no saved config needed) |
-| `install` | Register as a system service |
-| `uninstall` | Remove the system service |
-| `start` | Start the installed service |
-| `stop` | Stop the running service |
-| `status` | Show service status |
-| `version` | Print version information |
+| `radpresence set --username X --apikey Y` | Save credentials to config |
+| `radpresence set --interval 30` | Change the poll interval (seconds) |
+| `radpresence set` | Show current config |
+| `radpresence run` | Run in the foreground, Ctrl+C to stop |
+| `radpresence run --username X --apikey Y` | Run with inline credentials (no saved config needed) |
+| `radpresence install` | Register as a system service |
+| `radpresence uninstall` | Remove the system service |
+| `radpresence start` | Start the installed service |
+| `radpresence stop` | Stop the running service |
+| `radpresence status` | Show service status |
+| `radpresence version` | Print version information |
 
 ---
 
@@ -112,9 +112,9 @@ Binaries are written to `dist/`.
 
 | Platform | Path |
 |---|---|
-| Windows | `%APPDATA%\RADiscordPresence\config.json` |
-| macOS | `~/Library/Application Support/RADiscordPresence/config.json` |
-| Linux | `~/.config/RADiscordPresence/config.json` |
+| Windows | `%APPDATA%\RADPresence\config.json` |
+| macOS | `~/Library/Application Support/RADPresence/config.json` |
+| Linux | `~/.config/RADPresence/config.json` |
 
 > **Note:** The API key is currently stored in the config file in plain text. Keyring integration (Windows Credential Manager, macOS Keychain, libsecret) is planned.
 

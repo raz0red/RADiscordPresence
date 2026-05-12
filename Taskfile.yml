@@ -1,6 +1,6 @@
 version: "3"
 
-# RADiscordPresence build/dev tasks.
+# RADPresence build/dev tasks.
 # Only requirement: https://taskfile.dev — everything else runs inside Docker.
 #
 # Common workflows:
@@ -11,7 +11,7 @@ version: "3"
 #   task validate      Format + vet + lint (run before pushing)
 
 vars:
-  IMAGE: radiscordpresence-builder
+  IMAGE: radpresence-builder
   DOCKER_RUN: docker run --rm -v "{{.ROOT_DIR}}:/src" -w /src {{.IMAGE}}
   LINT_RUN: docker run --rm -v "{{.ROOT_DIR}}:/src" -w /src golangci/golangci-lint:latest
 

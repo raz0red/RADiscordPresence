@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/raz0red/radiscordpresence/internal/discord"
-	"github.com/raz0red/radiscordpresence/internal/ra"
+	"github.com/raz0red/radpresence/internal/discord"
+	"github.com/raz0red/radpresence/internal/ra"
 )
 
 // Worker polls RetroAchievements and keeps Discord Rich Presence up to date.
@@ -35,14 +35,14 @@ func New(username, apiKey string, intervalSecs int) *Worker {
 
 // Run starts the poll loop. It blocks until Stop is called.
 func (w *Worker) Run() {
-	log.Printf("RADiscordPresence started (poll every %s)", w.interval)
+	log.Printf("RADPresence started (poll every %s)", w.interval)
 	var rpc *discord.Client
 	defer func() {
 		if rpc != nil {
 			_ = rpc.SetActivity(nil)
 			rpc.Close()
 		}
-		log.Println("RADiscordPresence stopped")
+		log.Println("RADPresence stopped")
 	}()
 
 	for {

@@ -9,7 +9,7 @@ import (
 )
 
 // AppName is the application name used for config directory naming.
-const AppName = "RADiscordPresence"
+const AppName = "RADPresence"
 
 // OverrideDir, if non-empty, bypasses platform-specific directory resolution
 // in Dir(). Set at startup when --config-dir is present in os.Args so the
@@ -17,7 +17,7 @@ const AppName = "RADiscordPresence"
 // locate the actual user's config file.
 var OverrideDir string
 
-// Config holds all persistent configuration for RADiscordPresence.
+// Config holds all persistent configuration for RADPresence.
 type Config struct {
 	Username string `json:"username"`
 	// APIKey is stored in the config file for now.

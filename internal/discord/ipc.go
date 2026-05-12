@@ -17,7 +17,7 @@ const (
 	opFrame     uint32 = 1
 )
 
-// AppID is the Discord application client ID for RAPresence.
+// AppID is the Discord application client ID for RAD Presence.
 const AppID = "1503853960786874402"
 
 // Activity is the Rich Presence payload sent to Discord.

@@ -1,5 +1,5 @@
 // Package svc wraps github.com/kardianos/service to register and manage
-// RADiscordPresence as a background service on Windows, macOS, and Linux.
+// RADPresence as a background service on Windows, macOS, and Linux.
 package svc
 
 import (
@@ -8,13 +8,13 @@ import (
 
 	ksvc "github.com/kardianos/service"
 
-	"github.com/raz0red/radiscordpresence/internal/config"
-	"github.com/raz0red/radiscordpresence/internal/presence"
+	"github.com/raz0red/radpresence/internal/config"
+	"github.com/raz0red/radpresence/internal/presence"
 )
 
 var svcConfig = &ksvc.Config{
-	Name:        "RADiscordPresence",
-	DisplayName: "RA Discord Presence",
+	Name:        "RADPresence",
+	DisplayName: "RAD Presence",
 	Description: "Mirrors your RetroAchievements session to Discord Rich Presence.",
 	Option: ksvc.KeyValue{
 		// Install as a user service (runs under the logged-in user's account).
@@ -34,7 +34,7 @@ func (p *program) Start(_ ksvc.Service) error {
 		return fmt.Errorf("loading config: %w", err)
 	}
 	if cfg.Username == "" || cfg.APIKey == "" {
-		return fmt.Errorf("username and api_key are not configured — run: radiscordpresence set --username X --apikey Y")
+		return fmt.Errorf("username and api_key are not configured — run: radpresence set --username X --apikey Y")
 	}
 	p.worker = presence.New(cfg.Username, cfg.APIKey, cfg.Interval)
 	go p.worker.Run()

@@ -8,10 +8,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/raz0red/radiscordpresence/internal/buildinfo"
-	"github.com/raz0red/radiscordpresence/internal/config"
-	"github.com/raz0red/radiscordpresence/internal/presence"
-	"github.com/raz0red/radiscordpresence/internal/svc"
+	"github.com/raz0red/radpresence/internal/buildinfo"
+	"github.com/raz0red/radpresence/internal/config"
+	"github.com/raz0red/radpresence/internal/presence"
+	"github.com/raz0red/radpresence/internal/svc"
 )
 
 func main() {
@@ -37,14 +37,14 @@ func main() {
 	}
 
 	root := &cobra.Command{
-		Use:     "radiscordpresence",
-		Short:   "RetroAchievements Discord Rich Presence",
+		Use:     "radpresence",
+		Short:   "RAD Presence — RetroAchievements Discord Rich Presence",
 		Version: buildinfo.String(),
-		Long: `RADiscordPresence mirrors your RetroAchievements session to Discord Rich Presence.
+		Long: `RAD Presence mirrors your RetroAchievements session to Discord Rich Presence.
 
 Quick start:
-  radiscordpresence set --username YOUR_NAME --apikey YOUR_KEY
-  radiscordpresence run`,
+  radpresence set --username YOUR_NAME --apikey YOUR_KEY
+  radpresence run`,
 		SilenceUsage: true,
 	}
 
@@ -72,8 +72,8 @@ func cmdSet() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set",
 		Short: "Save credentials and settings to config",
-		Example: `  radiscordpresence set --username YOUR_NAME --apikey YOUR_KEY
-  radiscordpresence set --interval 30`,
+		Example: `  radpresence set --username YOUR_NAME --apikey YOUR_KEY
+  radpresence set --interval 30`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, err := config.Load()
 			if err != nil {
@@ -111,7 +111,7 @@ func cmdSet() *cobra.Command {
 				fmt.Printf("  interval: %d seconds\n", cfg.Interval)
 				fmt.Println()
 				fmt.Println("To update, use:")
-				fmt.Println("  radiscordpresence set --username YOUR_RA_USERNAME --apikey YOUR_WEB_API_KEY")
+				fmt.Println("  radpresence set --username YOUR_RA_USERNAME --apikey YOUR_WEB_API_KEY")
 				fmt.Println()
 				fmt.Println("Your Web API key is at: https://retroachievements.org/controlpanel.php")
 				return nil
@@ -157,8 +157,8 @@ func cmdRun() *cobra.Command {
 			if cfg.Username == "" || cfg.APIKey == "" {
 				return fmt.Errorf(
 					"username and apikey are required\n" +
-						"  save permanently: radiscordpresence set --username X --apikey Y\n" +
-						"  or pass inline:   radiscordpresence run --username X --apikey Y",
+"  save permanently: radpresence set --username X --apikey Y\n" +
+					"  or pass inline:   radpresence run --username X --apikey Y",
 				)
 			}
 
@@ -191,7 +191,7 @@ func cmdInstall() *cobra.Command {
 			if err := svc.Install(); err != nil {
 				return fmt.Errorf("install failed: %w\nTip: on Windows run as Administrator; on Linux/macOS use sudo", err)
 			}
-			fmt.Println("Service installed. Run: radiscordpresence start")
+			fmt.Println("Service installed. Run: radpresence start")
 			return nil
 		},
 	}
@@ -264,7 +264,7 @@ func cmdVersion() *cobra.Command {
 		Use:   "version",
 		Short: "Print version information",
 		Run: func(_ *cobra.Command, _ []string) {
-			fmt.Printf("RADiscordPresence %s\n", buildinfo.String())
+			fmt.Printf("RAD Presence %s\n", buildinfo.String())
 		},
 	}
 }

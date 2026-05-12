@@ -10,13 +10,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/raz0red/radiscordpresence/internal/buildinfo"
+	"github.com/raz0red/radpresence/internal/buildinfo"
 )
 
 const baseURL = "https://retroachievements.org/API"
 
 func userAgent() string {
-	return fmt.Sprintf("RADiscordPresence/%s (https://github.com/raz0red/radiscordpresence)", buildinfo.Version)
+	return fmt.Sprintf("RADPresence/%s (https://github.com/raz0red/radpresence)", buildinfo.Version)
 }
 
 // Client calls the RetroAchievements Web API.
