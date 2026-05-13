@@ -83,57 +83,6 @@ If you move the binary to a different path, run `radpresence uninstall` first, m
 
 ---
 
-## Web UI
-
-RAD Presence includes an optional browser-based UI that gives you a live view of your session, a real-time log, and full settings control — all without restarting the service.
-
-### Enabling
-
-```
-radpresence set --web-ui
-```
-
-Then either restart the service, or if you're running in the foreground with `radpresence run`, the server starts automatically on the next poll cycle. Open it in your browser with:
-
-```
-radpresence open
-```
-
-Or navigate to `http://127.0.0.1:7842` directly. The UI binds to `127.0.0.1` only and is never accessible from other machines.
-
-### Status Tab
-
-![Web UI — Status tab](.github/assets/webui-status.png)
-
-The Status tab shows a live view of your current session, updated every 3 seconds. At the top, connection badges indicate whether RAD Presence is successfully talking to both RetroAchievements and Discord. Below that, your user profile card shows your avatar, username, point totals (hardcore, true, and softcore), and your site rank — clicking the card opens your RA profile. When you are actively playing, a game card appears showing the cover art, game title, console, rich presence message, and current achievement progress — clicking it opens the game's RA page.
-
-If your credentials are invalid or the RA API cannot be reached, a red banner appears with a plain-English explanation and a direct link to the Settings tab.
-
-### Settings Tab
-
-![Web UI — Settings tab](.github/assets/webui-settings.png)
-
-The Settings tab lets you change any option without touching the command line. All changes (except port) take effect on the next poll cycle with no service restart required. Credentials are validated against the RA API before being saved — if the username or key is wrong, the save is rejected and a toast notification explains the problem. Changing the web UI port restarts the server automatically and redirects your browser to the new address.
-
-### Log Tab
-
-![Web UI — Log tab](.github/assets/webui-log.png)
-
-The Log tab shows a scrolling view of the last 500 log lines from the running service, colour-coded by severity (errors in red, warnings in amber). It refreshes every 3 seconds while the tab is open. The **Clear Log** button wipes the in-memory buffer immediately.
-
-### Web UI Commands
-
-| Command | Description |
-|---|---|
-| `radpresence set --web-ui` | Enable the web UI |
-| `radpresence set --web-ui=false` | Disable the web UI |
-| `radpresence set --web-port 8080` | Change the port (default: 7842) |
-| `radpresence open` | Open the web UI in your default browser |
-
-> All settings — including credentials, poll interval, and port — can be changed live from the web UI or via `radpresence set` while the service is running. No restart is needed.
-
----
-
 ## All Commands
 
 | Command | Description |
@@ -197,6 +146,57 @@ Binaries are written to `dist/`.
 | Linux | `~/.config/RADPresence/config.json` |
 
 > **Note:** The API key is currently stored in the config file in plain text. Keyring integration (Windows Credential Manager, macOS Keychain, libsecret) is planned.
+
+---
+
+## Web UI
+
+RAD Presence includes an optional browser-based UI that gives you a live view of your session, a real-time log, and full settings control — all without restarting the service.
+
+### Enabling
+
+```
+radpresence set --web-ui
+```
+
+Then either restart the service, or if you're running in the foreground with `radpresence run`, the server starts automatically on the next poll cycle. Open it in your browser with:
+
+```
+radpresence open
+```
+
+Or navigate to `http://127.0.0.1:7842` directly. The UI binds to `127.0.0.1` only and is never accessible from other machines.
+
+### Status Tab
+
+![Web UI — Status tab](.github/assets/webui-status.png)
+
+The Status tab shows a live view of your current session, updated every 3 seconds. At the top, connection badges indicate whether RAD Presence is successfully talking to both RetroAchievements and Discord. Below that, your user profile card shows your avatar, username, point totals (hardcore, true, and softcore), and your site rank — clicking the card opens your RA profile. When you are actively playing, a game card appears showing the cover art, game title, console, rich presence message, and current achievement progress — clicking it opens the game's RA page.
+
+If your credentials are invalid or the RA API cannot be reached, a red banner appears with a plain-English explanation and a direct link to the Settings tab.
+
+### Settings Tab
+
+![Web UI — Settings tab](.github/assets/webui-settings.png)
+
+The Settings tab lets you change any option without touching the command line. All changes (except port) take effect on the next poll cycle with no service restart required. Credentials are validated against the RA API before being saved — if the username or key is wrong, the save is rejected and a toast notification explains the problem. Changing the web UI port restarts the server automatically and redirects your browser to the new address.
+
+### Log Tab
+
+![Web UI — Log tab](.github/assets/webui-log.png)
+
+The Log tab shows a scrolling view of the last 500 log lines from the running service, colour-coded by severity (errors in red, warnings in amber). It refreshes every 3 seconds while the tab is open. The **Clear Log** button wipes the in-memory buffer immediately.
+
+### Web UI Commands
+
+| Command | Description |
+|---|---|
+| `radpresence set --web-ui` | Enable the web UI |
+| `radpresence set --web-ui=false` | Disable the web UI |
+| `radpresence set --web-port 8080` | Change the port (default: 7842) |
+| `radpresence open` | Open the web UI in your default browser |
+
+> All settings — including credentials, poll interval, and port — can be changed live from the web UI or via `radpresence set` while the service is running. No restart is needed.
 
 ---
 
