@@ -36,7 +36,7 @@ func (p *program) Start(_ ksvc.Service) error {
 	if cfg.Username == "" || cfg.APIKey == "" {
 		return fmt.Errorf("username and api_key are not configured — run: radpresence set --username X --apikey Y")
 	}
-	p.worker = presence.New(cfg.Username, cfg.APIKey, cfg.Interval)
+	p.worker = presence.New(cfg.Username, cfg.APIKey, cfg.Interval, cfg.HideButtons, cfg.HideAchievements)
 	go p.worker.Run()
 	return nil
 }

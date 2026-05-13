@@ -12,24 +12,28 @@ import (
 
 // Worker polls RetroAchievements and keeps Discord Rich Presence up to date.
 type Worker struct {
-	ra            *ra.Client
-	username      string
-	interval      time.Duration
-	stop          chan struct{}
-	currentGameID int
-	gameStartTime int64
+	ra               *ra.Client
+	username         string
+	interval         time.Duration
+	stop             chan struct{}
+	currentGameID    int
+	gameStartTime    int64
+	hideButtons      bool
+	hideAchievements bool
 }
 
 // New creates a Worker with the given credentials and poll interval.
-func New(username, apiKey string, intervalSecs int) *Worker {
+func New(username, apiKey string, intervalSecs int, hideButtons, hideAchievements bool) *Worker {
 	if intervalSecs <= 0 {
 		intervalSecs = 10
 	}
 	return &Worker{
-		ra:       ra.New(username, apiKey),
-		username: username,
-		interval: time.Duration(intervalSecs) * time.Second,
-		stop:     make(chan struct{}),
+		ra:               ra.New(username, apiKey),
+		username:         username,
+		interval:         time.Duration(intervalSecs) * time.Second,
+		stop:             make(chan struct{}),
+		hideButtons:      hideButtons,
+		hideAchievements: hideAchievements,
 	}
 }
 
@@ -112,7 +116,7 @@ func (w *Worker) tick(rpc **discord.Client) error {
 		log.Println("Discord IPC connected")
 	}
 
-	activity := buildActivity(w.username, summary, game, progress, w.gameStartTime)
+	activity := buildActivity(w.username, summary, game, progress, w.gameStartTime, w.hideButtons, w.hideAchievements)
 	if err := (*rpc).SetActivity(activity); err != nil {
 		log.Printf("[warn] SetActivity failed (%v) — reconnecting next cycle", err)
 		(*rpc).Close()
@@ -127,7 +131,7 @@ func (w *Worker) tick(rpc **discord.Client) error {
 	return nil
 }
 
-func buildActivity(username string, s ra.UserSummary, g ra.Game, p ra.UserProgress, startTime int64) *discord.Activity {
+func buildActivity(username string, s ra.UserSummary, g ra.Game, p ra.UserProgress, startTime int64, hideButtons, hideAchievements bool) *discord.Activity {
 	// name overrides the Discord app name ("RAPresence") shown in the presence card.
 	name := g.Title
 
@@ -138,7 +142,7 @@ func buildActivity(username string, s ra.UserSummary, g ra.Game, p ra.UserProgre
 
 	var state string
 	largeText := g.Title
-	if p.NumPossibleAchievements > 0 {
+	if !hideAchievements && p.NumPossibleAchievements > 0 {
 		mode := "Softcore"
 		if p.NumAchievedHardcore > 0 && p.NumAchievedHardcore == p.NumAchieved {
 			mode = "Hardcore"
@@ -147,7 +151,7 @@ func buildActivity(username string, s ra.UserSummary, g ra.Game, p ra.UserProgre
 		largeText = fmt.Sprintf("%d/%d achievements", p.NumAchieved, p.NumPossibleAchievements)
 	}
 
-	return &discord.Activity{
+	act := &discord.Activity{
 		Name:    name,
 		Type:    0, // PLAYING
 		Details: details,
@@ -160,9 +164,13 @@ func buildActivity(username string, s ra.UserSummary, g ra.Game, p ra.UserProgre
 		Timestamps: &discord.ActivityTimestamps{
 			Start: startTime,
 		},
-		Buttons: []discord.Button{
+	}
+
+	if !hideButtons {
+		act.Buttons = []discord.Button{
 			{Label: "RA Profile", URL: fmt.Sprintf("https://retroachievements.org/user/%s", username)},
 			{Label: "Game Page", URL: fmt.Sprintf("https://retroachievements.org/game/%d", s.LastGameID)},
-		},
+		}
 	}
+	return act
 }

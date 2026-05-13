@@ -46,6 +46,16 @@ You should see log output when you switch games. Press Ctrl+C to stop.
 
 ### 5. Install as a background service (optional)
 
+Place the binary somewhere permanent **before** running `install` — the service is registered to its location at install time. If you move or delete the binary afterwards the service will fail to start. Suggested locations:
+
+| Platform | Suggested location |
+|---|---|
+| Windows | `C:\Program Files\RADPresence\radpresence.exe` |
+| macOS | `/usr/local/bin/radpresence` |
+| Linux | `~/.local/bin/radpresence` or `/usr/local/bin/radpresence` |
+
+To move it later, run `radpresence uninstall`, move the binary, then `radpresence install` again.
+
 ```
 # Windows — run as Administrator
 radpresence install

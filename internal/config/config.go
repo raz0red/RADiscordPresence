@@ -19,11 +19,11 @@ var OverrideDir string
 
 // Config holds all persistent configuration for RADPresence.
 type Config struct {
-	Username string `json:"username"`
-	// APIKey is stored in the config file for now.
-	// TODO: migrate to system keyring (Windows Credential Manager / macOS Keychain / libsecret).
-	APIKey   string `json:"api_key"`
-	Interval int    `json:"interval_seconds"`
+	Username        string `json:"username"`
+	APIKey          string `json:"api_key"`
+	Interval        int    `json:"interval_seconds"`
+	HideButtons     bool   `json:"hide_buttons,omitempty"`
+	HideAchievements bool  `json:"hide_achievements,omitempty"`
 }
 
 // Default returns a Config with sensible defaults.

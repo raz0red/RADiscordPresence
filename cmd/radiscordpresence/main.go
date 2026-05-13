@@ -68,12 +68,15 @@ Quick start:
 func cmdSet() *cobra.Command {
 	var username, apikey string
 	var interval int
+	var hideButtons, hideAchievements bool
 
 	cmd := &cobra.Command{
 		Use:   "set",
 		Short: "Save credentials and settings to config",
 		Example: `  radpresence set --username YOUR_NAME --apikey YOUR_KEY
-  radpresence set --interval 30`,
+  radpresence set --interval 30
+  radpresence set --hide-buttons
+  radpresence set --hide-achievements`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, err := config.Load()
 			if err != nil {
@@ -93,6 +96,14 @@ func cmdSet() *cobra.Command {
 				cfg.Interval = interval
 				changed = true
 			}
+			if cmd.Flags().Changed("hide-buttons") {
+				cfg.HideButtons = hideButtons
+				changed = true
+			}
+			if cmd.Flags().Changed("hide-achievements") {
+				cfg.HideAchievements = hideAchievements
+				changed = true
+			}
 
 			if !changed {
 				// No flags given — show current config and usage hint.
@@ -109,6 +120,8 @@ func cmdSet() *cobra.Command {
 					fmt.Printf("  api_key:  (not set)\n")
 				}
 				fmt.Printf("  interval: %d seconds\n", cfg.Interval)
+				fmt.Printf("  hide_buttons:      %v\n", cfg.HideButtons)
+				fmt.Printf("  hide_achievements: %v\n", cfg.HideAchievements)
 				fmt.Println()
 				fmt.Println("To update, use:")
 				fmt.Println("  radpresence set --username YOUR_RA_USERNAME --apikey YOUR_WEB_API_KEY")
@@ -128,6 +141,8 @@ func cmdSet() *cobra.Command {
 	cmd.Flags().StringVar(&username, "username", "", "RetroAchievements username")
 	cmd.Flags().StringVar(&apikey, "apikey", "", "RetroAchievements Web API key")
 	cmd.Flags().IntVar(&interval, "interval", 10, "Poll interval in seconds")
+	cmd.Flags().BoolVar(&hideButtons, "hide-buttons", false, "Hide RA Profile/Game Page buttons (use --hide-buttons=false to re-enable)")
+	cmd.Flags().BoolVar(&hideAchievements, "hide-achievements", false, "Hide achievement count from presence (use --hide-achievements=false to re-enable)")
 	return cmd
 }
 
@@ -162,7 +177,7 @@ func cmdRun() *cobra.Command {
 				)
 			}
 
-			w := presence.New(cfg.Username, cfg.APIKey, cfg.Interval)
+			w := presence.New(cfg.Username, cfg.APIKey, cfg.Interval, cfg.HideButtons, cfg.HideAchievements)
 
 			sig := make(chan os.Signal, 1)
 			signal.Notify(sig, os.Interrupt)
