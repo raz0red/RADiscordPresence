@@ -35,6 +35,12 @@ func New(username, apiKey string) *Client {
 	}
 }
 
+// UpdateCredentials replaces the username and API key used for subsequent requests.
+func (c *Client) UpdateCredentials(username, apiKey string) {
+	c.username = username
+	c.apiKey = apiKey
+}
+
 func (c *Client) get(endpoint string, params url.Values) ([]byte, error) {
 	params.Set("y", c.apiKey)
 	u := fmt.Sprintf("%s/%s.php?%s", baseURL, endpoint, params.Encode())

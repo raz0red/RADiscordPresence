@@ -13,6 +13,20 @@ type UserSummary struct {
 	RichPresenceMsg     string `json:"RichPresenceMsg"`
 	RichPresenceMsgDate string `json:"RichPresenceMsgDate"`
 	Status              string `json:"Status"`
+	UserPic             string `json:"UserPic"`
+	TotalPoints         int    `json:"TotalPoints"`
+	TotalSoftcorePoints int    `json:"TotalSoftcorePoints"`
+	TotalTruePoints     int    `json:"TotalTruePoints"`
+	Rank                int    `json:"Rank"`
+	TotalRanked         int    `json:"TotalRanked"`
+}
+
+// AvatarURL returns the full URL for the user's profile picture.
+func (u UserSummary) AvatarURL() string {
+	if u.UserPic == "" {
+		return ""
+	}
+	return "https://media.retroachievements.org" + u.UserPic
 }
 
 // IsActive returns true if the user has fresh rich presence data.

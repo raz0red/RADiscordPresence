@@ -19,11 +19,13 @@ var OverrideDir string
 
 // Config holds all persistent configuration for RADPresence.
 type Config struct {
-	Username        string `json:"username"`
-	APIKey          string `json:"api_key"`
-	Interval        int    `json:"interval_seconds"`
-	HideButtons     bool   `json:"hide_buttons,omitempty"`
-	HideAchievements bool  `json:"hide_achievements,omitempty"`
+	Username         string `json:"username"`
+	APIKey           string `json:"api_key"`
+	Interval         int    `json:"interval_seconds"`
+	HideButtons      bool   `json:"hide_buttons,omitempty"`
+	HideAchievements bool   `json:"hide_achievements,omitempty"`
+	WebUI            bool   `json:"web_ui,omitempty"`
+	WebPort          int    `json:"web_port,omitempty"`
 }
 
 // Default returns a Config with sensible defaults.

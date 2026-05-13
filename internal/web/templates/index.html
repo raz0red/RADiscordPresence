@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAD Presence</title>
+  <link rel="icon" type="image/webp" href="/favicon.webp">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #1a1a2e;
+      --surface:  #22223a;
+      --surface2: #2c2c48;
+      --border:   #3a3a58;
+      --text:     #e0e0f0;
+      --muted:    #6a6a8a;
+      --accent:   #5f9ef2;
+      --green:    #4caf82;
+      --red:      #e0506a;
+      --gold:     #f0c040;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .header h1 { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .header .version { font-size: 0.72rem; color: var(--muted); font-weight: 400; }
+
+    /* ── Tabs ── */
+    .tabs {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      padding: 0 1.25rem;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.88rem;
+      padding: 0.7rem 1rem;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { border-bottom-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+    /* ── Tab content ── */
+    .tab-content { display: none; padding: 1.5rem; max-width: 820px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    /* ── Status badges ── */
+    .badges {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.85rem;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--muted);
+      transition: background 0.3s;
+    }
+    .dot.green { background: var(--green); box-shadow: 0 0 5px var(--green); }
+    .dot.red   { background: var(--red); }
+
+    /* ── Now playing card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      background: #262640;
+      box-shadow: 0 0 18px rgba(95,158,242,0.18), 0 0 0 1px var(--accent);
+    }
+    .card-inner {
+      display: flex;
+      gap: 1.1rem;
+      padding: 1.1rem;
+      align-items: flex-start;
+    }
+    .cover {
+      width: 96px; height: 96px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+    .cover-placeholder {
+      width: 96px; height: 96px;
+      border-radius: 8px;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+      color: var(--muted);
+    }
+    .cover-link { border-radius: 8px; display: block; flex-shrink: 0; }
+    .game-info { flex: 1; min-width: 0; }
+    .game-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.2rem;
+    }
+    .game-console { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.45rem; }
+    .game-presence { font-size: 0.85rem; color: var(--text); margin-bottom: 0.35rem; }
+    .game-achievements { font-size: 0.8rem; color: var(--gold); }
+    .not-playing {
+      padding: 2.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .last-poll {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.9rem;
+      text-align: right;
+    }
+
+    /* ── User info row ── */
+    .user-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .user-name a { color: var(--accent); text-decoration: none; }
+    .user-name a:hover { text-decoration: underline; }
+
+    /* ── Link buttons ── */
+    .link-btns {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .link-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .link-btn:hover { background: var(--border); }
+
+    /* ── User profile card ── */
+    .user-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      text-decoration: none;
+    }
+    .user-card:hover {
+      border-color: var(--accent);
+      background: #262640;
+      box-shadow: 0 0 18px rgba(95,158,242,0.18), 0 0 0 1px var(--accent);
+    }
+    .user-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+    .user-avatar-ph {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; flex-shrink: 0; color: var(--muted);
+    }
+    .avatar-link { border-radius: 50%; display: block; flex-shrink: 0; }
+    .user-details { flex: 1; min-width: 0; }
+    .user-handle {
+      font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem;
+    }
+    .user-handle a { color: var(--text); text-decoration: none; }
+    .user-handle a:hover { color: var(--accent); }
+    .user-stats {
+      display: flex; gap: 1.2rem; flex-wrap: wrap; margin-top: 0.3rem;
+    }
+    .stat { display: flex; flex-direction: column; }
+    .stat-val { font-size: 0.95rem; font-weight: 700; color: var(--accent); }
+    .stat-lbl { font-size: 0.67rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Log tab ── */
+    .log-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      height: 520px;
+      overflow-y: auto;
+      padding: 0.65rem 0.75rem;
+      font-family: 'Consolas', 'Cascadia Code', 'Monaco', 'Courier New', monospace;
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+    .log-line { word-break: break-all; }
+    .log-line.err  { color: var(--red); }
+    .log-line.warn { color: var(--gold); }
+    .btn-clear-log {
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #111;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 0.6rem 1.4rem;
+      transition: opacity 0.15s;
+      margin-top: 0.9rem;
+    }
+    .btn-clear-log:hover { opacity: 0.85; }
+
+    /* ── Settings tab ── */
+    .group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 0.9rem;
+    }
+    .group h3 {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.9rem;
+    }
+    .field { margin-bottom: 0.8rem; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+    .field input[type=text],
+    .field input[type=password],
+    .field input[type=number] {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.88rem;
+      padding: 0.48rem 0.7rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: var(--accent); }
+    .check-row { display: flex; align-items: center; gap: 0.65rem; cursor: pointer; }
+    .check-row input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+    .check-row label { font-size: 0.84rem; font-weight: 500; cursor: pointer; margin: 0; }
+    .hint { font-size: 0.72rem; color: var(--muted); margin-top: 0.22rem; }
+    .btn-save {
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #111;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 0.6rem 1.4rem;
+      transition: opacity 0.15s;
+      margin-top: 0.25rem;
+    }
+    .btn-save:hover { opacity: 0.85; }
+    .restart-note { font-size: 0.78rem; color: var(--gold); margin-top: 0.65rem; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      top: 1.1rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      background: #1a3a2a;
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      color: var(--green);
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      z-index: 1000;
+      pointer-events: none;
+      transition: transform 0.25s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .toast.error {
+      background: #3a1a1a;
+      border-color: #e05555;
+      color: #e05555;
+    }
+    /* ── Credential error banner (status tab) ── */
+    .cred-error {
+      background: #2a1a1a;
+      border: 1px solid #e05555;
+      border-radius: 10px;
+      color: #e05555;
+      font-size: 0.88rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .cred-error a { color: #e07070; text-decoration: underline; cursor: pointer; }
+  </style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="header">
+  <h1>RAD Presence <span class="version">{{.Version}}</span></h1>
+</div>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="status"   onclick="switchTab('status')">Status</button>
+  <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">Settings</button>
+  <button class="tab-btn" data-tab="log"      onclick="switchTab('log')">Log</button>
+</nav>
+
+<!-- ── Status tab ── -->
+<div class="tab-content active" id="tab-status">
+  <div class="cred-error" id="cred-error" style="display:none">
+    ⚠ <span id="cred-error-msg"></span>&ensp;<a onclick="switchTab('settings')">Check Settings ↗</a>
+  </div>
+  <div class="badges">
+    <div class="badge"><div class="dot" id="dot-ra"></div><span>RetroAchievements</span></div>
+    <div class="badge"><div class="dot" id="dot-discord"></div><span>Discord</span></div>
+  </div>
+
+  <div class="user-row" id="user-row" style="display:none">
+    <div class="user-name">Signed in as: <a id="user-link" href="#" target="_blank" rel="noopener noreferrer">—</a></div>
+    <div class="link-btns" id="game-btns" style="display:none">
+      <a class="link-btn" id="btn-game" href="#" target="_blank" rel="noopener noreferrer">Game Page ↗</a>
+      <a class="link-btn" id="btn-profile" href="#" target="_blank" rel="noopener noreferrer">RA Profile ↗</a>
+    </div>
+  </div>
+  <div class="user-card" id="user-card" style="display:none">
+    <a class="avatar-link" id="avatar-link" href="#" target="_blank" rel="noopener noreferrer">
+      <img class="user-avatar" id="user-avatar" src="" alt="">
+      <div class="user-avatar-ph" id="user-avatar-ph" style="display:none">👤</div>
+    </a>
+    <div class="user-details">
+      <div class="user-handle"><span id="user-card-link">&mdash;</span></div>
+      <div class="user-stats">
+        <div class="stat"><span class="stat-val" id="stat-points">&mdash;</span><span class="stat-lbl">Hardcore pts</span></div>
+        <div class="stat"><span class="stat-val" id="stat-true">&mdash;</span><span class="stat-lbl">True pts</span></div>
+        <div class="stat"><span class="stat-val" id="stat-softcore">&mdash;</span><span class="stat-lbl">Softcore pts</span></div>
+        <div class="stat"><span class="stat-val" id="stat-rank">&mdash;</span><span class="stat-lbl">Site rank</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="not-playing" id="not-playing">Loading…</div>
+    <div class="card-inner" id="playing-card" style="display:none">
+      <a class="cover-link" id="cover-link" href="#" target="_blank" rel="noopener noreferrer">
+        <img class="cover" id="cover-img" src="" alt="">
+        <div class="cover-placeholder" id="cover-ph" style="display:none">🎮</div>
+      </a>
+      <div class="game-info">
+        <div class="game-title"       id="g-title"></div>
+        <div class="game-console"     id="g-console"></div>
+        <div class="game-presence"    id="g-presence"></div>
+        <div class="game-achievements" id="g-achievements"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="last-poll" id="last-poll"></div>
+</div>
+
+<!-- ── Settings tab ── -->
+<div class="tab-content" id="tab-settings">
+  {{if eq .SavedMsg "1"}}{{end}}
+
+  <form method="POST" action="/settings">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+
+    <div class="group">
+      <h3>Account</h3>
+      <div class="field">
+        <label for="username">RA Username</label>
+        <input type="text" id="username" name="username" value="{{.Username}}"
+               placeholder="Your RetroAchievements username">
+      </div>
+      <div class="field">
+        <label for="api_key">Web API Key</label>
+        <input type="password" id="api_key" name="api_key"
+               {{if .HasAPIKey}}placeholder="API key is set — enter a new value to change it"
+               {{else}}placeholder="Your RetroAchievements Web API key"{{end}}>
+        {{if .HasAPIKey}}<div class="hint">Leave blank to keep the current key.</div>{{end}}
+      </div>
+    </div>
+
+    <div class="group">
+      <h3>Behavior</h3>
+      <div class="field">
+        <label for="interval">Poll Interval (seconds)</label>
+        <input type="number" id="interval" name="interval" value="{{.Interval}}" min="5" max="300">
+      </div>
+      <div class="field">
+        <div class="check-row">
+          <input type="checkbox" id="hide_buttons" name="hide_buttons" {{if .HideButtons}}checked{{end}}>
+          <label for="hide_buttons">Hide RA Profile and Game Page buttons</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="check-row">
+          <input type="checkbox" id="hide_achievements" name="hide_achievements" {{if .HideAchievements}}checked{{end}}>
+          <label for="hide_achievements">Hide achievement count from presence</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <h3>Web UI</h3>
+      <div class="field">
+        <label for="web_port">Port</label>
+        <input type="number" id="web_port" name="web_port" value="{{.WebPort}}" min="1024" max="65535">
+        <div class="hint">The server will restart automatically on the new port when you save.</div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-save">Save Settings</button>
+  </form>
+</div>
+
+<!-- ── Log tab ── -->
+<div class="tab-content" id="tab-log">
+  <div class="log-box" id="log-box"></div>
+  <button class="btn-clear-log" onclick="clearLog()">Clear Log</button>
+</div>
+
+<script>
+  // ── Tab switching ──────────────────────────────────────────────
+  function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+    localStorage.setItem('radtab', name);
+    if (name === 'log') refreshLog();
+  }
+
+  // Restore last active tab (honour ?tab= query param first).
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const q    = params.get('tab');
+    const saved = localStorage.getItem('radtab');
+    const tab = q || saved || 'status';
+    if (tab !== 'status') switchTab(tab);
+
+    // Show toast and clean URL when saved=1 or error=... is present.
+    if (params.get('saved') === '1') {
+      params.delete('saved');
+      const clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+      history.replaceState(null, '', clean);
+      showToast('Settings saved', false);
+    } else if (params.get('error')) {
+      var errCode = params.get('error');
+      params.delete('error');
+      const clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+      history.replaceState(null, '', clean);
+      var msg = errCode === 'invalid_credentials'
+        ? 'Invalid username or API key — credentials not saved'
+        : 'Error saving settings';
+      showToast(msg, true);
+    }
+  })();
+
+  // ── Helpers ───────────────────────────────────────────────────
+  function showToast(msg, isError) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.remove('show', 'error');
+    // Snapshot position before transition (forces browser to apply the reset)
+    t.style.transition = 'none';
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(-120%)';
+    void t.offsetWidth; // force reflow
+    // Clear inline overrides so the CSS class rules take effect
+    t.style.transition = '';
+    t.style.opacity = '';
+    t.style.transform = '';
+    if (isError) t.classList.add('error');
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3500);
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function timeSince(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const sec = Math.round((Date.now() - d) / 1000);
+    if (sec < 5)  return 'just now';
+    if (sec < 60) return sec + 's ago';
+    return Math.round(sec / 60) + 'm ago';
+  }
+
+  // ── Status refresh ────────────────────────────────────────────
+  function refreshStatus() {
+    fetch('/api/status').then(r => r.json()).then(function(s) {
+      document.getElementById('dot-ra').className      = 'dot ' + (s.ra_connected      ? 'green' : 'red');
+      document.getElementById('dot-discord').className = 'dot ' + (s.discord_connected ? 'green' : 'red');
+
+      // Credential error banner
+      var credErr = document.getElementById('cred-error');
+      var credErrMsg = document.getElementById('cred-error-msg');
+      if (!s.ra_connected && s.last_error) {
+        var raw = s.last_error;
+        // Make HTTP 401/403/404 human-readable
+        var friendly = raw;
+        if (/401|403/.test(raw))       friendly = 'Invalid API key — authentication failed.';
+        else if (/404/.test(raw))      friendly = 'Username not found — check your RA username.';
+        else if (/network|connect/i.test(raw)) friendly = 'Cannot reach RetroAchievements — check your network.';
+        credErrMsg.textContent = friendly;
+        credErr.style.display = '';
+      } else {
+        credErr.style.display = 'none';
+      }
+
+      // User info row — only show when we have a confirmed username
+      var userRow  = document.getElementById('user-row');
+      var userLink = document.getElementById('user-link');
+      if (s.username) {
+        userRow.style.display = '';
+        userLink.textContent = s.username;
+        userLink.href = s.user_profile_url || '#';
+      } else {
+        userRow.style.display = 'none';
+      }
+
+      // User profile card
+      var userCard = document.getElementById('user-card');
+      if (s.username) {
+        userCard.style.display = '';
+        var av  = document.getElementById('user-avatar');
+        var avPh = document.getElementById('user-avatar-ph');
+        if (s.avatar_url) {
+          av.src = s.avatar_url;
+          av.style.display = ''; avPh.style.display = 'none';
+        } else {
+          av.style.display = 'none'; avPh.style.display = '';
+        }
+        document.getElementById('avatar-link').href = s.user_profile_url || '#';
+        var cl = document.getElementById('user-card-link');
+        cl.textContent = s.username;
+        // Whole-card click (skip if user clicked an inner link)
+        userCard.onclick = function(e) {
+          if (e.target.tagName !== 'A' && s.user_profile_url) {
+            window.open(s.user_profile_url, '_blank', 'noopener,noreferrer');
+          }
+        };
+        document.getElementById('stat-points').textContent   = s.total_points         != null ? s.total_points.toLocaleString()          : '—';
+        document.getElementById('stat-true').textContent     = s.total_true_points    != null ? s.total_true_points.toLocaleString()      : '—';
+        document.getElementById('stat-softcore').textContent = s.total_softcore_points!= null ? s.total_softcore_points.toLocaleString()  : '—';
+        document.getElementById('stat-rank').textContent     = (s.rank && s.total_ranked)
+          ? '#' + s.rank.toLocaleString() + ' / ' + s.total_ranked.toLocaleString() : '—';
+      } else {
+        userCard.style.display = 'none';
+      }
+
+      var notPlaying = document.getElementById('not-playing');
+      var playCard   = document.getElementById('playing-card');
+      var gameBtns   = document.getElementById('game-btns');
+
+      if (s.is_playing) {
+        notPlaying.style.display = 'none';
+        playCard.style.display   = 'flex';
+
+        // Link buttons
+        gameBtns.style.display = '';
+        if (s.user_profile_url) document.getElementById('btn-profile').href = s.user_profile_url;
+        if (s.game_page_url)    document.getElementById('btn-game').href    = s.game_page_url;
+
+        // Cover art link
+        document.getElementById('cover-link').href = s.game_page_url || '#';
+        // Whole-card click (skip if user clicked the inner cover-link)
+        var gameCard = document.getElementById('playing-card').parentElement;
+        gameCard.onclick = function(e) {
+          if (e.target.tagName !== 'A' && e.target.tagName !== 'IMG' && s.game_page_url) {
+            window.open(s.game_page_url, '_blank', 'noopener,noreferrer');
+          }
+        };
+
+        var img = document.getElementById('cover-img');
+        var ph  = document.getElementById('cover-ph');
+        if (s.cover_art_url) {
+          img.src = s.cover_art_url;
+          img.style.display = '';
+          ph.style.display  = 'none';
+        } else {
+          img.style.display = 'none';
+          ph.style.display  = '';
+        }
+        document.getElementById('g-title').textContent        = s.game_title        || '';
+        document.getElementById('g-console').textContent      = s.console_name      || '';
+        document.getElementById('g-presence').textContent     = s.rich_presence_msg || '';
+        document.getElementById('g-achievements').textContent = s.achievements       || '';
+      } else {
+        notPlaying.textContent   = 'Not currently playing';
+        notPlaying.style.display = '';
+        playCard.style.display   = 'none';
+        gameBtns.style.display   = 'none';
+      }
+
+      var lp = document.getElementById('last-poll');
+      lp.textContent = s.last_poll_time ? 'Last polled ' + timeSince(s.last_poll_time) : '';
+    }).catch(function() {});
+  }
+
+  // ── Log refresh ───────────────────────────────────────────────
+  function refreshLog() {
+    fetch('/api/logs').then(r => r.json()).then(function(lines) {
+      var box = document.getElementById('log-box');
+      var atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+      box.innerHTML = lines.map(function(l) {
+        var cls = '';
+        if (l.indexOf('[error]') !== -1) cls = 'err';
+        else if (l.indexOf('[warn]')  !== -1) cls = 'warn';
+        return '<div class="log-line ' + cls + '">' + esc(l) + '</div>';
+      }).join('');
+      if (atBottom) box.scrollTop = box.scrollHeight;
+    }).catch(function() {});
+  }
+
+  function clearLog() {
+    fetch('/api/logs/clear', { method: 'POST' }).then(function() {
+      document.getElementById('log-box').innerHTML = '';
+    }).catch(function() {});
+  }
+
+  // ── Auto refresh ──────────────────────────────────────────────
+  refreshStatus();
+  setInterval(refreshStatus, 3000);
+  setInterval(function() {
+    if (document.getElementById('tab-log').classList.contains('active')) refreshLog();
+  }, 3000);
+</script>
+</body>
+</html>

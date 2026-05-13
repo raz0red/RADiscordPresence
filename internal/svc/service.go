@@ -4,12 +4,15 @@ package svc
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"os"
 
 	ksvc "github.com/kardianos/service"
 
 	"github.com/raz0red/radpresence/internal/config"
 	"github.com/raz0red/radpresence/internal/presence"
+	"github.com/raz0red/radpresence/internal/web"
 )
 
 var svcConfig = &ksvc.Config{
@@ -37,6 +40,38 @@ func (p *program) Start(_ ksvc.Service) error {
 		return fmt.Errorf("username and api_key are not configured — run: radpresence set --username X --apikey Y")
 	}
 	p.worker = presence.New(cfg.Username, cfg.APIKey, cfg.Interval, cfg.HideButtons, cfg.HideAchievements)
+
+	// Always register the web-start factory so the worker can start the
+	// server at runtime when web_ui is toggled on via config reload.
+	startWeb := func(port int) {
+		h := web.NewHub()
+		log.SetOutput(io.MultiWriter(os.Stderr, h.Log))
+		p.worker.SetHub(h)
+		p.worker.SetWebShutdown(h.Shutdown)
+		p.worker.SetWebPort(port)
+		p.worker.SetWebPortChange(func(p int) {
+			select {
+			case h.PortChange <- p:
+			default:
+			}
+		})
+		srv := web.NewServer(h, port)
+		go func() {
+			if err := srv.Start(); err != nil {
+				log.Printf("[web] server stopped: %v", err)
+			}
+		}()
+	}
+	p.worker.SetWebStart(startWeb)
+
+	if cfg.WebUI {
+		port := cfg.WebPort
+		if port == 0 {
+			port = 7842
+		}
+		startWeb(port)
+	}
+
 	go p.worker.Run()
 	return nil
 }
