@@ -40,9 +40,9 @@ export default function App() {
 
       <main className="relative z-10 pt-32 pb-24 flex flex-col items-center">
         {/* Split Hero Section */}
-        <section className="w-full max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-24 mb-32">
+        <section className="w-full max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16 mb-32">
           
-          <div className="flex-1 text-center lg:text-left flex flex-col items-center lg:items-start pt-8">
+          <div className="flex-1 text-center lg:text-left flex flex-col items-center lg:items-start pt-8 max-w-2xl">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -57,10 +57,10 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-              className="font-display font-bold text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-[1.05] bg-gradient-to-br from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent mb-6"
+              className="font-display font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-[1.05] bg-gradient-to-br from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent mb-6"
             >
               Show off your <br className="hidden lg:block" />
-              <span className="text-blurple-500 bg-clip-text text-transparent bg-gradient-to-r from-blurple-500 to-indigo-400">RetroAchievements</span>
+              <span className="text-blurple-500 bg-clip-text text-transparent bg-gradient-to-r from-blurple-500 to-indigo-400 inline-block break-words max-w-full">RetroAchievements</span>
               <br className="hidden lg:block" /> on Discord.
             </motion.h1>
 
@@ -83,7 +83,7 @@ export default function App() {
                 href={RELEASES_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="group relative inline-flex items-center justify-center gap-2 bg-blurple-500 hover:bg-blurple-600 text-white font-semibold py-3.5 px-8 rounded-full transition-all overflow-hidden shadow-[0_0_40px_-10px_rgba(88,101,242,0.8)] w-full sm:w-auto"
+                className="group relative inline-flex items-center justify-center gap-2 bg-blurple-500 hover:bg-blurple-600 text-white font-semibold py-3.5 px-8 rounded-full transition-all overflow-hidden shadow-[0_0_40px_-10px_rgba(88,101,242,0.8)] w-full sm:w-auto shrink-0"
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                 <Download size={20} className="relative z-10" />
@@ -93,7 +93,7 @@ export default function App() {
                 href={GITHUB_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 hover:border-zinc-500 text-zinc-300 font-semibold py-3.5 px-8 rounded-full transition-all w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 hover:border-zinc-500 text-zinc-300 font-semibold py-3.5 px-8 rounded-full transition-all w-full sm:w-auto shrink-0"
               >
                 <Github size={20} />
                 <span>View Source</span>
@@ -105,15 +105,15 @@ export default function App() {
             initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ duration: 0.7, delay: 0.2, type: "spring" }}
-            className="flex-1 w-full flex justify-center lg:justify-end relative"
+            className="w-full lg:w-auto flex justify-center relative shrink-0"
           >
             <div className="absolute inset-0 bg-blurple-500/20 blur-[100px] rounded-full scale-75" />
             
-            <div className="relative transform-gpu hover:scale-[1.02] transition-transform duration-500 mx-auto lg:mx-0 shadow-2xl shadow-blurple-500/20 rounded-2xl overflow-hidden border border-white/10 flex justify-center bg-[#1E1F22]">
+            <div className="relative transform-gpu hover:scale-[1.02] transition-transform duration-500 mx-auto shadow-2xl shadow-blurple-500/20 rounded-2xl overflow-hidden border border-white/10 flex justify-center bg-[#1E1F22] w-full max-w-[293px]">
               <img
                 src="https://raw.githubusercontent.com/raz0red/RADPresence/master/.github/assets/screenshot.png"
                 alt="Discord Rich Presence Showcasing RetroAchievements"
-                className="w-full max-w-[300px] h-auto block"
+                className="w-full h-auto block"
               />
             </div>
           </motion.div>
