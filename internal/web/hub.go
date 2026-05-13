@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/raz0red/radpresence/internal/buildinfo"
 	"github.com/raz0red/radpresence/internal/presence"
 )
 
@@ -107,6 +108,7 @@ type statusResponse struct {
 	Rank                int       `json:"rank"`
 	TotalRanked         int       `json:"total_ranked"`
 	LastError           string    `json:"last_error"`
+	Version             string    `json:"version"`
 }
 
 func (h *Hub) getStatusResponse() statusResponse {
@@ -138,5 +140,6 @@ func (h *Hub) getStatusResponse() statusResponse {
 	if h.status.GameID != 0 {
 		resp.GamePageURL = fmt.Sprintf("https://retroachievements.org/game/%d", h.status.GameID)
 	}
+	resp.Version = buildinfo.Version
 	return resp
 }

@@ -600,8 +600,10 @@
   }
 
   // ── Status refresh ────────────────────────────────────────────
+  var pageVersion = '{{.Version}}';
   function refreshStatus() {
     fetch('/api/status').then(r => r.json()).then(function(s) {
+      if (s.version && s.version !== pageVersion) { location.reload(); return; }
       document.getElementById('disconnected-banner').style.display = 'none';
       document.getElementById('dot-ra').className      = 'dot ' + (s.ra_connected      ? 'green' : 'red');
       document.getElementById('dot-discord').className = 'dot ' + (s.discord_connected ? 'green' : 'red');
