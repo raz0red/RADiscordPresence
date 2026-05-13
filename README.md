@@ -109,34 +109,6 @@ If you move the binary to a different path, run `radpresence uninstall` first, m
 
 ---
 
-## Building from Source
-
-Requires [Docker](https://www.docker.com/) and [Task](https://taskfile.dev).
-
-### Build Tasks
-
-| Task | Description |
-|---|---|
-| `task build` | All platforms (Windows, Linux, macOS amd64 + arm64) |
-| `task build:windows` | Windows amd64 only |
-| `task build:linux` | Linux amd64 only |
-| `task build:mac` | macOS amd64 + arm64 only |
-
-Binaries are written to `dist/`.
-
-### Dev Tasks
-
-| Task | Description |
-|---|---|
-| `task fmt` | Auto-format all Go source files |
-| `task fix` | Auto-format and apply golangci-lint auto-fixes |
-| `task vet` | Run `go vet` |
-| `task lint` | Run `golangci-lint` |
-| `task validate` | Format + vet + lint (run before pushing) |
-| `task clean` | Remove `dist/` |
-
----
-
 ## Config File Location
 
 | Platform | Path |
@@ -197,6 +169,34 @@ The Log tab shows a scrolling view of the last 500 log lines from the running se
 | `radpresence open` | Open the web UI in your default browser |
 
 > All settings — including credentials, poll interval, and port — can be changed live from the web UI or via `radpresence set` while the service is running. No restart is needed.
+
+---
+
+## Building from Source
+
+Requires [Docker](https://www.docker.com/) and [Task](https://taskfile.dev).
+
+### Build Tasks
+
+| Task | Description |
+|---|---|
+| `task build` | All platforms (Windows, Linux, macOS amd64 + arm64) |
+| `task build:windows` | Windows amd64 only |
+| `task build:linux` | Linux amd64 only |
+| `task build:mac` | macOS amd64 + arm64 only |
+
+Binaries are written to `dist/`.
+
+### Dev Tasks
+
+| Task | Description |
+|---|---|
+| `task fmt` | Auto-format all Go source files |
+| `task fix` | Auto-format and apply golangci-lint auto-fixes |
+| `task vet` | Run `go vet` |
+| `task lint` | Run `golangci-lint` |
+| `task validate` | Format + vet + lint (run before pushing) |
+| `task clean` | Remove `dist/` |
 
 ---
 
