@@ -7,10 +7,10 @@ cd /src
 go mod tidy
 
 # Resolve version metadata.
-# VERSION: nearest git tag (e.g. v1.0.0), or "dev" if no tags exist.
+# VERSION: use $VERSION env var if set (passed by CI), else detect from git tag, else "dev".
 # COMMIT:  short commit hash, or "unknown" if no commits.
 # DATE:    build date in YYYY-MM-DD format.
-VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "dev")
+VERSION=${VERSION:-$(git describe --tags --abbrev=0 2>/dev/null || echo "dev")}
 COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 DATE=$(date -u +%Y-%m-%d)
 

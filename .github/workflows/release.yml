@@ -24,6 +24,8 @@ jobs:
 
       - name: Build all platforms
         run: task build
+        env:
+          VERSION: ${{ github.ref_name }}
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v2

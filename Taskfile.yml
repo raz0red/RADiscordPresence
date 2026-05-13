@@ -13,7 +13,7 @@ version: "3"
 
 vars:
   IMAGE: radpresence-builder
-  DOCKER_RUN: docker run --rm -v "{{.ROOT_DIR}}:/src:z" -w /src {{.IMAGE}}
+  DOCKER_RUN: docker run --rm -v "{{.ROOT_DIR}}:/src:z" -w /src -e VERSION={{.VERSION}} {{.IMAGE}}
   LINT_RUN: docker run --rm -v "{{.ROOT_DIR}}:/src" -w /src golangci/golangci-lint:latest
 
 tasks:
