@@ -14,7 +14,7 @@ VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "dev")
 COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 DATE=$(date -u +%Y-%m-%d)
 
-LDFLAGS="-s -w \
+LDFLAGS="-s -w -buildvcs=false \
   -X github.com/raz0red/radpresence/internal/buildinfo.Version=${VERSION} \
   -X github.com/raz0red/radpresence/internal/buildinfo.Commit=${COMMIT} \
   -X github.com/raz0red/radpresence/internal/buildinfo.Date=${DATE}"
