@@ -1,0 +1,6 @@
+{
+  "name": "RAD Presence",
+  "description": "Flashy landing page for RAD Presence - a tool that mirrors RetroAchievements to Discord.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
