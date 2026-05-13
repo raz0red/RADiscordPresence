@@ -36,17 +36,11 @@ radpresence set --username YOUR_RA_USERNAME --apikey YOUR_API_KEY
 
 The Discord desktop app must be running on the same machine and logged in to the account you want the Rich Presence posted to. RAD Presence communicates with Discord over a local IPC socket — it does not work with the browser version of Discord.
 
-### 4. Test in the foreground
+### 4. Install as a background service (recommended)
 
-```
-radpresence run
-```
+RAD Presence is designed to run as a native OS service — it starts automatically on login, runs silently in the background, and requires no interaction. This is the recommended way to use it.
 
-You should see log output when you switch games. Press Ctrl+C to stop.
-
-### 5. Install as a background service (optional)
-
-Place the binary somewhere permanent **before** running `install` — the service is registered to its location at install time. If you move or delete the binary afterwards the service will fail to start. Suggested locations:
+Place the binary somewhere permanent **before** running `install` — the service is registered to its location at install time. Suggested locations:
 
 | Platform | Suggested location |
 |---|---|
@@ -67,6 +61,16 @@ radpresence start
 radpresence install
 radpresence start
 ```
+
+Once installed, it will start automatically on every login — no further action needed.
+
+### Running in the foreground (for testing/debugging only)
+
+```
+radpresence run
+```
+
+Runs in the terminal and prints log output. Press Ctrl+C to stop. Useful for verifying your setup before installing as a service.
 
 ### Updating to a new version
 
