@@ -78,6 +78,10 @@ radpresence start
 |---|---|
 | `radpresence set --username X --apikey Y` | Save credentials to config |
 | `radpresence set --interval 30` | Change the poll interval (seconds) |
+| `radpresence set --hide-buttons` | Hide RA Profile and Game Page buttons from presence |
+| `radpresence set --hide-buttons=false` | Re-enable buttons |
+| `radpresence set --hide-achievements` | Hide achievement count from presence |
+| `radpresence set --hide-achievements=false` | Re-enable achievement count |
 | `radpresence set` | Show current config |
 | `radpresence run` | Run in the foreground, Ctrl+C to stop |
 | `radpresence run --username X --apikey Y` | Run with inline credentials (no saved config needed) |
