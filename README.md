@@ -54,8 +54,6 @@ Place the binary somewhere permanent **before** running `install` — the servic
 | macOS | `/usr/local/bin/radpresence` |
 | Linux | `~/.local/bin/radpresence` or `/usr/local/bin/radpresence` |
 
-To move it later, run `radpresence uninstall`, move the binary, then `radpresence install` again.
-
 ```
 # Windows — run as Administrator
 radpresence install
