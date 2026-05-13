@@ -70,6 +70,14 @@ radpresence install
 radpresence start
 ```
 
+### Updating to a new version
+
+1. Stop the service: `radpresence stop`
+2. Replace the binary in place with the new one
+3. Start the service: `radpresence start`
+
+If you move the binary to a different path, run `radpresence uninstall` first, move it, then `radpresence install` and `radpresence start` again.
+
 ---
 
 ## All Commands
