@@ -1,6 +1,6 @@
 # RAD Presence
 
-**RAD Presence** = RetroAchievements Discord Rich Presence. 
+**RAD Presence** = RetroAchievements Discord Rich Presence.
 
 A background service that mirrors your [RetroAchievements](https://retroachievements.org/) session to [Discord Rich Presence](https://discord.com/developers/docs/rich-presence/overview).
 

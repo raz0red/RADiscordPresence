@@ -53,16 +53,19 @@ tasks:
 
   fmt:
     desc: Auto-format all Go source files in-place
+    deps: [build:image]
     cmd: "{{.DOCKER_RUN}} gofmt -w cmd/ internal/"
 
   fix:
     desc: Auto-format and apply golangci-lint auto-fixes
+    deps: [build:image]
     cmds:
       - task: fmt
       - "{{.LINT_RUN}} golangci-lint run --fix"
 
   vet:
     desc: Run go vet across all packages
+    deps: [build:image]
     cmd: "{{.DOCKER_RUN}} go vet ./..."
 
   lint:
