@@ -36,17 +36,10 @@ elif [ "${1}" = "linux-only" ]; then
     GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-linux-amd64 ./cmd/radiscordpresence
     echo "Build complete: dist/radpresence-linux-amd64"
 else
-    echo "Building Windows amd64 (${VERSION} ${COMMIT})..."
-    GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-windows-amd64.exe ./cmd/radiscordpresence
-
-    echo "Building Linux amd64..."
-    GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-linux-amd64 ./cmd/radiscordpresence
-
-    echo "Building macOS amd64..."
-    GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-darwin-amd64 ./cmd/radiscordpresence
-
-    echo "Building macOS arm64..."
-    GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-darwin-arm64 ./cmd/radiscordpresence
-
+    echo "Building all platforms (${VERSION} ${COMMIT})..."
+    GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-${VERSION}-windows-amd64.exe ./cmd/radiscordpresence
+    GOOS=linux   GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-${VERSION}-linux-amd64   ./cmd/radiscordpresence
+    GOOS=darwin  GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-${VERSION}-darwin-amd64  ./cmd/radiscordpresence
+    GOOS=darwin  GOARCH=arm64 CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o dist/radpresence-${VERSION}-darwin-arm64   ./cmd/radiscordpresence
     echo "All builds complete."
 fi

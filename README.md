@@ -47,9 +47,9 @@ You should see log output when you switch games. Press Ctrl+C to stop.
 radpresence install
 radpresence start
 
-# macOS — run with sudo
-sudo radpresence install
-sudo radpresence start
+# macOS — no sudo needed (installs a LaunchAgent in ~/Library/LaunchAgents)
+radpresence install
+radpresence start
 
 # Linux — no sudo needed (installs a systemd user service)
 radpresence install
