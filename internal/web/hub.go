@@ -142,10 +142,8 @@ func (h *Hub) getStatusResponse() statusResponse {
 		resp.GamePageURL = fmt.Sprintf("https://retroachievements.org/game/%d", h.status.GameID)
 	}
 	resp.Version = buildinfo.Version
-	// Override DiscordConnected with a live socket check so the badge reflects
-	// Discord's actual state between poll cycles.
-	if resp.DiscordConnected && !discord.IsRunning() {
-		resp.DiscordConnected = false
-	}
+	// Drive DiscordConnected directly from a live process/socket check so the
+	// badge reflects Discord's actual state regardless of poll cycle timing.
+	resp.DiscordConnected = discord.IsRunning()
 	return resp
 }
