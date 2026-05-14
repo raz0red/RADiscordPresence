@@ -24,6 +24,20 @@ func openConn() (net.Conn, error) {
 	return nil, fmt.Errorf("discord-ipc socket not found in any candidate directory — is Discord running?")
 }
 
+// IsRunning reports whether a Discord IPC socket is present on disk.
+// It does not open a connection — it is safe to call frequently.
+func IsRunning() bool {
+	for _, dir := range candidateDirs() {
+		for i := 0; i < 10; i++ {
+			path := filepath.Join(dir, fmt.Sprintf("discord-ipc-%d", i))
+			if _, err := os.Stat(path); err == nil {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // candidateDirs returns the directories to search for Discord IPC sockets,
 // in priority order: Flatpak Discord, Snap Discord, native Discord.
 func candidateDirs() []string {

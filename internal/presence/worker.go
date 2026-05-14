@@ -226,6 +226,9 @@ func (w *Worker) tick(rpc **discord.Client) error {
 
 	// Reconnect to Discord if needed.
 	if *rpc == nil {
+		if !discord.IsRunning() {
+			return nil // Discord not running — skip silently, no error logged
+		}
 		*rpc, err = discord.Connect(discord.AppID)
 		if err != nil {
 			return fmt.Errorf("discord connect: %w", err)
