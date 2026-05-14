@@ -13,13 +13,13 @@ export default function App() {
     <div className="min-h-screen bg-zinc-950 overflow-x-hidden">
       {/* Abstract Background Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-blurple-500/20 rounded-full blur-[120px] mix-blend-screen opacity-50" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-retro-orange/20 rounded-full blur-[120px] mix-blend-screen opacity-50" />
-        <div className="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] bg-indigo-500/10 rounded-full blur-[100px] mix-blend-screen opacity-40" />
+        <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-blurple-500/15 rounded-full blur-[80px] opacity-40" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-retro-orange/10 rounded-full blur-[80px] opacity-30" />
+        <div className="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] bg-indigo-500/10 rounded-full blur-[60px] opacity-30" />
       </div>
 
       {/* Nav */}
-      <nav className="fixed top-0 w-full z-50 bg-zinc-950/50 backdrop-blur-md border-b border-white/10">
+      <nav className="fixed top-0 w-full z-50 bg-zinc-950/90 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 font-display font-bold text-xl tracking-tight">
             <span className="text-blurple-500 text-2xl">RAD</span>
@@ -132,11 +132,11 @@ export default function App() {
             transition={{ duration: 0.7, delay: 0.2, type: "spring" }}
             className="w-full lg:w-auto flex justify-center relative shrink-0 pt-6 lg:pt-0"
           >
-            <div className="absolute inset-0 bg-blurple-500/20 blur-[100px] rounded-full scale-75" />
+            <div className="absolute inset-0 bg-blurple-500/15 blur-[60px] rounded-full scale-75" />
             
             <div className="relative transform-gpu hover:scale-[1.02] transition-transform duration-500 mx-auto shadow-2xl shadow-blurple-500/20 rounded-[20px] overflow-hidden border border-white/10 flex justify-center bg-[#1E1F22] w-full max-w-[260px]">
               <img
-                src="https://raw.githubusercontent.com/raz0red/RADPresence/master/.github/assets/screenshot.png"
+                src="/screenshot.png"
                 alt="Discord Rich Presence Showcasing RetroAchievements"
                 className="w-full h-auto block"
               />
@@ -216,8 +216,9 @@ export default function App() {
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  src="https://raw.githubusercontent.com/raz0red/RADPresence/master/.github/assets/webui-status.png" 
+                  src="/webui-status.png" 
                   alt="Web UI Status" 
+                  loading="lazy"
                   className="rounded-xl border border-white/10 shadow-2xl skew-y-2 -rotate-2 hover:skew-y-0 hover:rotate-0 transition-transform duration-500 w-full"
                 />
                 <motion.img 
@@ -225,8 +226,9 @@ export default function App() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ delay: 0.1 }}
-                  src="https://raw.githubusercontent.com/raz0red/RADPresence/master/.github/assets/webui-settings.png" 
+                  src="/webui-settings.png" 
                   alt="Web UI Settings" 
+                  loading="lazy"
                   className="rounded-xl border border-white/10 shadow-2xl -skew-y-2 rotate-2 hover:skew-y-0 hover:rotate-0 transition-transform duration-500 w-3/4 ml-auto -mt-12"
                 />
               </div>
