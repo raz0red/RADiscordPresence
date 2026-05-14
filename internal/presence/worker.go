@@ -236,6 +236,13 @@ func (w *Worker) tick(rpc **discord.Client) error {
 		log.Println("Discord IPC connected")
 	}
 
+	// Clear stale RP message from a previous game. If the message timestamp predates
+	// the current game session (with a small buffer for server clock skew), the message
+	// belongs to the previous game and should not be shown.
+	if rpTime, err := time.Parse("2006-01-02 15:04:05", summary.RichPresenceMsgDate); err != nil || rpTime.Unix() < w.gameStartTime-10 {
+		summary.RichPresenceMsg = ""
+	}
+
 	activity := buildActivity(w.username, summary, game, progress, w.gameStartTime, w.hideButtons, w.hideAchievements)
 	if err := (*rpc).SetActivity(activity); err != nil {
 		log.Printf("[warn] SetActivity failed (%v) — reconnecting next cycle", err)
