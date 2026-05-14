@@ -47,6 +47,10 @@ func candidateDirs() []string {
 	var dirs []string
 	if xdg := os.Getenv("XDG_RUNTIME_DIR"); xdg != "" {
 		dirs = append(dirs,
+			// Newer Flatpak sandbox path (bwrap xdg-run proxy)
+			filepath.Join(xdg, ".flatpak", "dev.vencord.Vesktop", "xdg-run"),
+			filepath.Join(xdg, ".flatpak", "com.discordapp.Discord", "xdg-run"),
+			// Older Flatpak sandbox path
 			filepath.Join(xdg, "app", "com.discordapp.Discord"),
 			filepath.Join(xdg, "app", "dev.vencord.Vesktop"),
 			filepath.Join(xdg, "snap.discord"),
